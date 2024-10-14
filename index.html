@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa MAJI</title>
+    <title>Absensi Siswa</title>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
     <style>
@@ -21,11 +21,14 @@
         }
         .student {
             margin: 5px 0;
+            display: flex;
+            justify-content: space-between; /* Memisahkan nama dan tombol */
+            align-items: center; /* Menjaga tombol di tengah */
         }
         button {
-            margin: 5px;
-            padding: 10px;
-            font-size: 16px;
+            margin-left: 10px; /* Jarak tombol dari nama */
+            padding: 5px 10px;
+            font-size: 14px;
         }
         #exitMessage {
             display: none;
@@ -37,10 +40,9 @@
 <body>
     <h1>Absensi Siswa</h1>
     <div id="studentList">Daftar Siswa:</div>
-    <button id="markPresentButton" onclick="markPresent()">Tandai Pulang</button>
     <button id="exitButton" onclick="exitApp()">Keluar</button>
     <audio id="backgroundMusic" loop>
-        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mp3">
+        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
     </audio>
     <div id="exitMessage">Sampai Jumpa!</div>
 
@@ -77,6 +79,14 @@
                     const studentDiv = document.createElement('div');
                     studentDiv.className = "student"; // Tambahkan kelas untuk styling
                     studentDiv.innerText = student.name; // Ambil nama siswa dari data Firebase
+
+                    // Buat tombol untuk menandai pulang
+                    const markPresentButton = document.createElement('button');
+                    markPresentButton.innerText = student.hasLeft ? "Sudah Pulang" : "Tandai Pulang"; // Periksa apakah sudah pulang
+                    markPresentButton.disabled = student.hasLeft; // Nonaktifkan jika sudah pulang
+                    markPresentButton.onclick = () => markPresent(student.id, markPresentButton);
+
+                    studentDiv.appendChild(markPresentButton); // Tambahkan tombol ke div siswa
                     studentListDiv.appendChild(studentDiv);
                 });
             }).catch((error) => {
@@ -85,16 +95,23 @@
         }
 
         // Fungsi untuk menandai siswa pulang
-        function markPresent() {
-            alert("Siswa sudah pulang! Boleh pulang lagi 2 Minggu setelah sekarang.");
-            document.getElementById('markPresentButton').innerText = "Sudah Pulang";
-            // Tambahkan kode untuk menyimpan data absensi ke Firebase
+        function markPresent(studentId, button) {
+            // Update status pulang di Firebase
+            database.ref('students/' + studentId).update({
+                hasLeft: true, // Tandai siswa sebagai sudah pulang
+                leaveDate: new Date().toISOString() // Simpan tanggal pulang
+            }).then(() => {
+                alert(button.innerText + " sudah pulang! Boleh pulang lagi 2 Minggu setelah sekarang.");
+                button.innerText = "Sudah Pulang"; // Ubah teks tombol
+                button.disabled = true; // Nonaktifkan tombol setelah ditandai
+            }).catch((error) => {
+                console.error("Error updating student status:", error);
+            });
         }
 
         // Fungsi untuk keluar dari aplikasi
         function exitApp() {
             document.getElementById('studentList').style.display = 'none';
-            document.getElementById('markPresentButton').style.display = 'none';
             document.getElementById('exitButton').style.display = 'none';
             document.getElementById('exitMessage').style.display = 'block';
             document.getElementById('backgroundMusic').pause();
