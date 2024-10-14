@@ -22,6 +22,8 @@
     <li data-name="wkwk">wkwk <button onclick="markLeave('wkwk')">Tandai Pulang</button></li>
 </ul>
 
+<div id="attendance-info"></div>
+
 <script>
     // Simpan absensi pulang dalam objek
     const absensiPulang = {};
@@ -30,6 +32,9 @@
         const date = new Date();
         const formattedDate = date.toLocaleString();
         absensiPulang[name] = formattedDate; // Menyimpan waktu pulang
-        alert(name + ' telah ditandai pulang pada ' + formattedDate);
+
+        // Menampilkan informasi absensi pulang di halaman
+        const infoDiv = document.getElementById('attendance-info');
+        infoDiv.innerHTML += `<p>${name} telah ditandai pulang pada ${formattedDate}</p>`;
     }
 </script>
