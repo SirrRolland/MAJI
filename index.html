@@ -4,49 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Siswa</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-        }
-        #exit-message {
-            display: none;
-            font-size: 24px;
-            color: red;
-        }
-    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
 </head>
 <body>
-    <h1>Selamat Datang di Aplikasi Absensi Siswa</h1>
-    <audio id="background-music" loop>
-        <source src="Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+    <h1>Absensi Siswa</h1>
+    <div id="studentList"></div>
+    <button id="markPresentButton" onclick="markPresent()">Tandai Pulang</button>
+    <button id="exitButton" onclick="exitApp()">Keluar</button>
+
+    <audio id="backgroundMusic" loop>
+        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
     </audio>
 
-    <div>
-        <button onclick="location.href='students.html'">Lihat Daftar Siswa</button>
-        <button onclick="exitApp()">Exit</button>
-    </div>
-    
-    <div id="exit-message">Sampai Jumpa!</div>
-
     <script>
-        // Memutar musik saat halaman dimuat
-        window.onload = function() {
-            var music = document.getElementById('background-music');
-            music.play();
+        // Konfigurasi Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDagk7NSN2KjYQ6JUHBTeMpYuIj2nMv-Co",
+            authDomain: "students-70440.firebaseapp.com",
+            databaseURL: "https://students-70440-default-rtdb.firebaseio.com/",
+            projectId: "students-70440",
+            storageBucket: "students-70440.appspot.com",
+            messagingSenderId: "884830572053",
+            appId: "1:884830572053:android:3f9708bde3d7df80b1881c"
         };
 
-        // Fungsi untuk menampilkan pesan keluar
+        // Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Memulai musik saat aplikasi dimuat
+        window.onload = function() {
+            document.getElementById('backgroundMusic').play();
+            loadStudents(); // Panggil fungsi untuk memuat daftar siswa
+        };
+
+        // Fungsi untuk memuat daftar siswa dari Firebase
+        function loadStudents() {
+            const studentListDiv = document.getElementById('studentList');
+            database.ref('students').once('value').then((snapshot) => {
+                console.log("Data siswa berhasil dimuat.");
+                studentListDiv.innerHTML = ""; // Kosongkan daftar siswa sebelum memuat
+                snapshot.forEach((childSnapshot) => {
+                    const student = childSnapshot.val();
+                    const studentDiv = document.createElement('div');
+                    studentDiv.innerText = student.name; // Ambil nama siswa dari data Firebase
+                    studentListDiv.appendChild(studentDiv);
+                });
+            }).catch((error) => {
+                console.error("Error loading students:", error);
+            });
+        }
+
+        // Fungsi untuk menandai siswa pulang
+        function markPresent() {
+            alert("Siswa sudah pulang! Boleh pulang lagi 2 Minggu setelah sekarang.");
+            document.getElementById('markPresentButton').innerText = "Sudah Pulang";
+            // Tambahkan kode untuk menyimpan data absensi ke Firebase
+        }
+
+        // Fungsi untuk keluar dari aplikasi
         function exitApp() {
-            document.body.innerHTML = ''; // Menghilangkan semua konten
-            document.getElementById('exit-message').style.display = 'block'; // Menampilkan pesan
-            var music = document.getElementById('background-music');
-            music.pause(); // Menghentikan musik
+            document.getElementById('app').style.display = 'none';
+            alert("Sampai Jumpa!");
+            // Berhentikan musik
+            document.getElementById('backgroundMusic').pause();
         }
     </script>
 </body>
