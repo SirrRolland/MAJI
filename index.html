@@ -7,73 +7,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            color: #333;
+            background-color: #f0f0f0;
             text-align: center;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        button {
-            margin: 10px 0;
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: white;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
+        h1 {
+            color: #333;
         }
         #exit-message {
             display: none;
             font-size: 24px;
-            margin-top: 20px;
-            color: #dc3545;
+            color: red;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Absensi Siswa</h1>
-        <div id="student-list"></div>
-        <button onclick="loadStudents()">Tampilkan Daftar Siswa</button>
-        <button onclick="exitApp()">Keluar</button>
-        <div id="exit-message">Terima kasih! Sampai jumpa!</div>
-    </div>
-
+    <h1>Selamat Datang di Aplikasi Absensi Siswa</h1>
     <audio id="background-music" loop>
         <source src="Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
-        Your browser does not support the audio tag.
+        Your browser does not support the audio element.
     </audio>
+    <button onclick="exitApp()">Exit</button>
+    <div id="exit-message">Sampai Jumpa!</div>
 
     <script>
-        // Memulai musik latar
+        // Memutar musik saat halaman dimuat
         window.onload = function() {
-            document.getElementById('background-music').play();
+            var music = document.getElementById('background-music');
+            music.play();
         };
 
-        function loadStudents() {
-            fetch('students.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('student-list').innerHTML = data;
-                })
-                .catch(error => console.error('Error loading student list:', error));
-        }
-
+        // Fungsi untuk menampilkan pesan keluar
         function exitApp() {
-            document.querySelector('.container').style.display = 'none'; // Menyembunyikan kontainer
-            document.getElementById('exit-message').style.display = 'block'; // Menampilkan pesan exit
-            document.getElementById('background-music').pause(); // Menghentikan musik
+            document.body.innerHTML = ''; // Menghilangkan semua konten
+            document.getElementById('exit-message').style.display = 'block'; // Menampilkan pesan
+            var music = document.getElementById('background-music');
+            music.pause(); // Menghentikan musik
         }
     </script>
 </body>
