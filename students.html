@@ -39,11 +39,27 @@
         // Memulai musik saat aplikasi dimuat
         window.onload = function() {
             document.getElementById('backgroundMusic').play();
+            loadStudents(); // Panggil fungsi untuk memuat daftar siswa
         };
+
+        // Fungsi untuk memuat daftar siswa dari Firebase
+        function loadStudents() {
+            const studentListDiv = document.getElementById('studentList');
+            database.ref('students').once('value').then((snapshot) => {
+                studentListDiv.innerHTML = ""; // Kosongkan daftar siswa sebelum memuat
+                snapshot.forEach((childSnapshot) => {
+                    const student = childSnapshot.val();
+                    const studentDiv = document.createElement('div');
+                    studentDiv.innerText = student.name; // Ambil nama siswa dari data Firebase
+                    studentListDiv.appendChild(studentDiv);
+                });
+            }).catch((error) => {
+                console.error("Error loading students:", error);
+            });
+        }
 
         // Fungsi untuk menandai siswa pulang
         function markPresent() {
-            // Tambahkan logika untuk menandai siswa pulang di Firebase
             alert("Siswa sudah pulang! Boleh pulang lagi 2 Minggu setelah sekarang.");
             document.getElementById('markPresentButton').innerText = "Sudah Pulang";
             // Tambahkan kode untuk menyimpan data absensi ke Firebase
