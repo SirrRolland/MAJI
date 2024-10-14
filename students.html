@@ -1,51 +1,61 @@
-<h2>Daftar Siswa</h2>
-<ul id="student-list">
-    <li data-name="Abi">Abi <button onclick="markLeave(this, 'Abi')">Tandai Pulang</button></li>
-    <li data-name="Rizal">Rizal <button onclick="markLeave(this, 'Rizal')">Tandai Pulang</button></li>
-    <li data-name="Ramli">Ramli <button onclick="markLeave(this, 'Ramli')">Tandai Pulang</button></li>
-    <li data-name="Sopyan">Sopyan <button onclick="markLeave(this, 'Sopyan')">Tandai Pulang</button></li>
-    <li data-name="Ardi">Ardi <button onclick="markLeave(this, 'Ardi')">Tandai Pulang</button></li>
-    <li data-name="Bayu">Bayu <button onclick="markLeave(this, 'Bayu')">Tandai Pulang</button></li>
-    <li data-name="Rizki">Rizki <button onclick="markLeave(this, 'Rizki')">Tandai Pulang</button></li>
-    <li data-name="Rizki P">Rizki P <button onclick="markLeave(this, 'Rizki P')">Tandai Pulang</button></li>
-    <li data-name="Ugie">Ugie <button onclick="markLeave(this, 'Ugie')">Tandai Pulang</button></li>
-    <li data-name="Wahyu">Wahyu <button onclick="markLeave(this, 'Wahyu')">Tandai Pulang</button></li>
-    <li data-name="Setya">Setya <button onclick="markLeave(this, 'Setya')">Tandai Pulang</button></li>
-    <li data-name="Pradana">Pradana <button onclick="markLeave(this, 'Pradana')">Tandai Pulang</button></li>
-    <li data-name="Gatau">Gatau <button onclick="markLeave(this, 'Gatau')">Tandai Pulang</button></li>
-    <li data-name="bingung">bingung <button onclick="markLeave(this, 'bingung')">Tandai Pulang</button></li>
-    <li data-name="Testo">Testo <button onclick="markLeave(this, 'Testo')">Tandai Pulang</button></li>
-    <li data-name="doang">doang <button onclick="markLeave(this, 'doang')">Tandai Pulang</button></li>
-    <li data-name="kok">kok <button onclick="markLeave(this, 'kok')">Tandai Pulang</button></li>
-    <li data-name="dibikin">dibikin <button onclick="markLeave(this, 'dibikin')">Tandai Pulang</button></li>
-    <li data-name="pusing">pusing <button onclick="markLeave(this, 'pusing')">Tandai Pulang</button></li>
-    <li data-name="wkwk">wkwk <button onclick="markLeave(this, 'wkwk')">Tandai Pulang</button></li>
-</ul>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Absensi Siswa</h1>
+        <div id="studentList"></div>
+        <button id="markPresentButton" onclick="markPresent()">Tandai Pulang</button>
+        <button id="exitButton" onclick="exitApp()">Keluar</button>
+    </div>
 
-<div id="attendance-info"></div>
+    <audio id="backgroundMusic" loop>
+        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
+    </audio>
 
-<script>
-    // Simpan absensi pulang dalam objek
-    const absensiPulang = {};
+    <script>
+        // Konfigurasi Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDagk7NSN2KjYQ6JUHBTeMpYuIj2nMv-Co",  // Ganti dengan API Key Anda
+            authDomain: "students-70440.firebaseapp.com",  // Ganti dengan Project ID Anda
+            databaseURL: "https://students-70440-default-rtdb.firebaseio.com/", // Ganti dengan URL Database Anda
+            projectId: "students-70440",  // Ganti dengan Project ID Anda
+            storageBucket: "students-70440.appspot.com", // Ganti dengan Storage Bucket Anda
+            messagingSenderId: "884830572053", // Ganti dengan Sender ID Anda
+            appId: "1:884830572053:android:3f9708bde3d7df80b1881c"  // Ganti dengan App ID Anda
+        };
 
-    function markLeave(button, name) {
-        const date = new Date();
-        const formattedDate = date.toLocaleString();
-        absensiPulang[name] = formattedDate; // Menyimpan waktu pulang
+        // Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        // Menampilkan informasi absensi pulang di halaman
-        const infoDiv = document.getElementById('attendance-info');
-        infoDiv.innerHTML += `<p>${name} telah ditandai pulang pada ${formattedDate}</p>`;
+        // Memulai musik saat aplikasi dimuat
+        window.onload = function() {
+            document.getElementById('backgroundMusic').play();
+        };
 
-        // Mengubah teks tombol menjadi "Sudah Pulang"
-        button.innerText = "Sudah Pulang";
-        button.disabled = true; // Menonaktifkan tombol setelah ditekan
+        // Fungsi untuk menandai siswa pulang
+        function markPresent() {
+            // Tambahkan logika untuk menandai siswa pulang di Firebase
+            alert("Siswa sudah pulang! Boleh pulang lagi 2 Minggu setelah sekarang.");
+            document.getElementById('markPresentButton').innerText = "Sudah Pulang";
+            // Tambahkan kode untuk menyimpan data absensi ke Firebase
+        }
 
-        // Menghitung waktu 2 minggu (14 hari)
-        const twoWeeksLater = new Date(date.getTime() + 14 * 24 * 60 * 60 * 1000);
-        const formattedTwoWeeksLater = twoWeeksLater.toLocaleString();
-        
-        // Menampilkan pesan pop-up
-        alert(`${name} boleh pulang lagi pada ${formattedTwoWeeksLater}`);
-    }
-</script>
+        // Fungsi untuk keluar dari aplikasi
+        function exitApp() {
+            document.getElementById('app').style.display = 'none';
+            alert("Sampai Jumpa!");
+            // Berhentikan musik
+            document.getElementById('backgroundMusic').pause();
+        }
+    </script>
+</body>
+</html>
