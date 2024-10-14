@@ -1,25 +1,25 @@
 <h2>Daftar Siswa</h2>
 <ul id="student-list">
-    <li data-name="Abi">Abi <button onclick="markLeave('Abi')">Tandai Pulang</button></li>
-    <li data-name="Rizal">Rizal <button onclick="markLeave('Rizal')">Tandai Pulang</button></li>
-    <li data-name="Ramli">Ramli <button onclick="markLeave('Ramli')">Tandai Pulang</button></li>
-    <li data-name="Sopyan">Sopyan <button onclick="markLeave('Sopyan')">Tandai Pulang</button></li>
-    <li data-name="Ardi">Ardi <button onclick="markLeave('Ardi')">Tandai Pulang</button></li>
-    <li data-name="Bayu">Bayu <button onclick="markLeave('Bayu')">Tandai Pulang</button></li>
-    <li data-name="Rizki">Rizki <button onclick="markLeave('Rizki')">Tandai Pulang</button></li>
-    <li data-name="Rizki P">Rizki P <button onclick="markLeave('Rizki P')">Tandai Pulang</button></li>
-    <li data-name="Ugie">Ugie <button onclick="markLeave('Ugie')">Tandai Pulang</button></li>
-    <li data-name="Wahyu">Wahyu <button onclick="markLeave('Wahyu')">Tandai Pulang</button></li>
-    <li data-name="Setya">Setya <button onclick="markLeave('Setya')">Tandai Pulang</button></li>
-    <li data-name="Pradana">Pradana <button onclick="markLeave('Pradana')">Tandai Pulang</button></li>
-    <li data-name="Gatau">Gatau <button onclick="markLeave('Gatau')">Tandai Pulang</button></li>
-    <li data-name="bingung">bingung <button onclick="markLeave('bingung')">Tandai Pulang</button></li>
-    <li data-name="Testo">Testo <button onclick="markLeave('Testo')">Tandai Pulang</button></li>
-    <li data-name="doang">doang <button onclick="markLeave('doang')">Tandai Pulang</button></li>
-    <li data-name="kok">kok <button onclick="markLeave('kok')">Tandai Pulang</button></li>
-    <li data-name="dibikin">dibikin <button onclick="markLeave('dibikin')">Tandai Pulang</button></li>
-    <li data-name="pusing">pusing <button onclick="markLeave('pusing')">Tandai Pulang</button></li>
-    <li data-name="wkwk">wkwk <button onclick="markLeave('wkwk')">Tandai Pulang</button></li>
+    <li data-name="Abi">Abi <button onclick="markLeave(this, 'Abi')">Tandai Pulang</button></li>
+    <li data-name="Rizal">Rizal <button onclick="markLeave(this, 'Rizal')">Tandai Pulang</button></li>
+    <li data-name="Ramli">Ramli <button onclick="markLeave(this, 'Ramli')">Tandai Pulang</button></li>
+    <li data-name="Sopyan">Sopyan <button onclick="markLeave(this, 'Sopyan')">Tandai Pulang</button></li>
+    <li data-name="Ardi">Ardi <button onclick="markLeave(this, 'Ardi')">Tandai Pulang</button></li>
+    <li data-name="Bayu">Bayu <button onclick="markLeave(this, 'Bayu')">Tandai Pulang</button></li>
+    <li data-name="Rizki">Rizki <button onclick="markLeave(this, 'Rizki')">Tandai Pulang</button></li>
+    <li data-name="Rizki P">Rizki P <button onclick="markLeave(this, 'Rizki P')">Tandai Pulang</button></li>
+    <li data-name="Ugie">Ugie <button onclick="markLeave(this, 'Ugie')">Tandai Pulang</button></li>
+    <li data-name="Wahyu">Wahyu <button onclick="markLeave(this, 'Wahyu')">Tandai Pulang</button></li>
+    <li data-name="Setya">Setya <button onclick="markLeave(this, 'Setya')">Tandai Pulang</button></li>
+    <li data-name="Pradana">Pradana <button onclick="markLeave(this, 'Pradana')">Tandai Pulang</button></li>
+    <li data-name="Gatau">Gatau <button onclick="markLeave(this, 'Gatau')">Tandai Pulang</button></li>
+    <li data-name="bingung">bingung <button onclick="markLeave(this, 'bingung')">Tandai Pulang</button></li>
+    <li data-name="Testo">Testo <button onclick="markLeave(this, 'Testo')">Tandai Pulang</button></li>
+    <li data-name="doang">doang <button onclick="markLeave(this, 'doang')">Tandai Pulang</button></li>
+    <li data-name="kok">kok <button onclick="markLeave(this, 'kok')">Tandai Pulang</button></li>
+    <li data-name="dibikin">dibikin <button onclick="markLeave(this, 'dibikin')">Tandai Pulang</button></li>
+    <li data-name="pusing">pusing <button onclick="markLeave(this, 'pusing')">Tandai Pulang</button></li>
+    <li data-name="wkwk">wkwk <button onclick="markLeave(this, 'wkwk')">Tandai Pulang</button></li>
 </ul>
 
 <div id="attendance-info"></div>
@@ -28,7 +28,7 @@
     // Simpan absensi pulang dalam objek
     const absensiPulang = {};
 
-    function markLeave(name) {
+    function markLeave(button, name) {
         const date = new Date();
         const formattedDate = date.toLocaleString();
         absensiPulang[name] = formattedDate; // Menyimpan waktu pulang
@@ -36,5 +36,16 @@
         // Menampilkan informasi absensi pulang di halaman
         const infoDiv = document.getElementById('attendance-info');
         infoDiv.innerHTML += `<p>${name} telah ditandai pulang pada ${formattedDate}</p>`;
+
+        // Mengubah teks tombol menjadi "Sudah Pulang"
+        button.innerText = "Sudah Pulang";
+        button.disabled = true; // Menonaktifkan tombol setelah ditekan
+
+        // Menghitung waktu 2 minggu (14 hari)
+        const twoWeeksLater = new Date(date.getTime() + 14 * 24 * 60 * 60 * 1000);
+        const formattedTwoWeeksLater = twoWeeksLater.toLocaleString();
+        
+        // Menampilkan pesan pop-up
+        alert(`${name} boleh pulang lagi pada ${formattedTwoWeeksLater}`);
     }
 </script>
