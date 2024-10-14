@@ -3,19 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa</title>
+    <title>Absensi Siswa MAJI</title>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        #studentList {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .student {
+            margin: 5px 0;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #exitMessage {
+            display: none;
+            font-size: 24px;
+            color: green;
+        }
+    </style>
 </head>
 <body>
     <h1>Absensi Siswa</h1>
-    <div id="studentList"></div>
+    <div id="studentList">Daftar Siswa:</div>
     <button id="markPresentButton" onclick="markPresent()">Tandai Pulang</button>
     <button id="exitButton" onclick="exitApp()">Keluar</button>
-
     <audio id="backgroundMusic" loop>
-        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mpeg">
+        <source src="music/Himawari_No_Yakusoku(256k).mp3" type="audio/mp3">
     </audio>
+    <div id="exitMessage">Sampai Jumpa!</div>
 
     <script>
         // Konfigurasi Firebase Anda
@@ -44,10 +71,11 @@
             const studentListDiv = document.getElementById('studentList');
             database.ref('students').once('value').then((snapshot) => {
                 console.log("Data siswa berhasil dimuat.");
-                studentListDiv.innerHTML = ""; // Kosongkan daftar siswa sebelum memuat
+                studentListDiv.innerHTML = "Daftar Siswa:"; // Kosongkan daftar siswa sebelum memuat
                 snapshot.forEach((childSnapshot) => {
                     const student = childSnapshot.val();
                     const studentDiv = document.createElement('div');
+                    studentDiv.className = "student"; // Tambahkan kelas untuk styling
                     studentDiv.innerText = student.name; // Ambil nama siswa dari data Firebase
                     studentListDiv.appendChild(studentDiv);
                 });
@@ -65,9 +93,10 @@
 
         // Fungsi untuk keluar dari aplikasi
         function exitApp() {
-            document.getElementById('app').style.display = 'none';
-            alert("Sampai Jumpa!");
-            // Berhentikan musik
+            document.getElementById('studentList').style.display = 'none';
+            document.getElementById('markPresentButton').style.display = 'none';
+            document.getElementById('exitButton').style.display = 'none';
+            document.getElementById('exitMessage').style.display = 'block';
             document.getElementById('backgroundMusic').pause();
         }
     </script>
