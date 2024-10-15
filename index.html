@@ -1,60 +1,19 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa</title>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .hidden {
-            display: none;
-        }
-        .student-list {
-            margin: 20px 0;
-            padding: 10px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .button {
-            padding: 10px 15px;
-            background-color: #28a745;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #218838;
-        }
-    </style>
+    <title>Firebase Connection Test</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
 </head>
 <body>
-    <h1>Absensi Siswa</h1>
-    <div id="form-section">
-        <h2>Tambah Siswa</h2>
-        <input type="text" id="fullName" placeholder="Nama Lengkap" required>
-        <input type="text" id="origin" placeholder="Tempat Asal" required>
-        <button class="button" onclick="addStudent()">Tambah Siswa</button>
-    </div>
-
-    <div id="student-list" class="student-list hidden">
-        <h2>Daftar Siswa</h2>
-        <ul id="students"></ul>
-    </div>
-
-    <button class="button" onclick="exitApp()">Keluar</button>
+    <h1>Firebase Connection Test</h1>
+    <div id="status">Checking Firebase connection...</div>
 
     <script>
-        // Konfigurasi Firebase
+        // Konfigurasi Firebase dengan informasi yang diberikan
         const firebaseConfig = {
             apiKey: "AIzaSyDagk7NSN2KjYQ6JUHBTeMpYuIj2nMv-Co",
             authDomain: "students-70440.firebaseapp.com",
@@ -62,76 +21,24 @@
             projectId: "students-70440",
             storageBucket: "students-70440.appspot.com",
             messagingSenderId: "884830572053",
-            appId: "1:884830572053:web:3f9708bde3d7df80b1881c"
+            appId: "1:884830572053:android:3f9708bde3d7df80b1881c"
         };
 
         // Inisialisasi Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+
+        // Cek koneksi Firebase
         const database = firebase.database();
-
-        function addStudent() {
-            const fullName = document.getElementById('fullName').value;
-            const origin = document.getElementById('origin').value;
-
-            if (fullName && origin) {
-                const studentId = 'student' + Date.now(); // Membuat ID unik
-                const studentRef = database.ref('students/' + studentId);
-                studentRef.set({ name: fullName, origin: origin })
-                    .then(() => {
-                        alert("Siswa berhasil ditambahkan!");
-                        document.getElementById('fullName').value = '';
-                        document.getElementById('origin').value = '';
-                        loadStudents(); // Memuat ulang daftar siswa
-                    })
-                    .catch((error) => {
-                        console.error("Error adding student:", error);
-                    });
+        database.ref("/").get().then(snapshot => {
+            if (snapshot.exists()) {
+                document.getElementById("status").innerText = "Firebase connected successfully!";
             } else {
-                alert("Silakan lengkapi semua field!");
+                document.getElementById("status").innerText = "Firebase connected, but no data found.";
             }
-        }
-
-        function loadStudents() {
-            const studentsRef = database.ref('students');
-            studentsRef.once('value').then(snapshot => {
-                const studentsList = document.getElementById('students');
-                studentsList.innerHTML = ''; // Kosongkan daftar siswa sebelum menambah
-                snapshot.forEach(childSnapshot => {
-                    const student = childSnapshot.val();
-                    const li = document.createElement('li');
-                    li.textContent = `${student.name} - ${student.origin}`;
-                    const button = document.createElement('button');
-                    button.textContent = "Tandai Pulang";
-                    button.onclick = function () {
-                        markLeave(childSnapshot.key);
-                    };
-                    li.appendChild(button);
-                    studentsList.appendChild(li);
-                });
-                document.getElementById('student-list').classList.remove('hidden');
-            });
-        }
-
-        function markLeave(studentId) {
-            const studentRef = database.ref('students/' + studentId);
-            studentRef.update({ canLeave: false, lastLeaveDate: Date.now() })
-                .then(() => {
-                    alert("Siswa telah ditandai pulang.");
-                    loadStudents(); // Memuat ulang daftar siswa
-                })
-                .catch((error) => {
-                    console.error("Error marking leave:", error);
-                });
-        }
-
-        function exitApp() {
-            alert("Sampai jumpa!");
-            document.getElementById('form-section').classList.add('hidden');
-            document.getElementById('student-list').classList.add('hidden');
-        }
-
-        // Memuat daftar siswa saat halaman dimuat
-        window.onload = loadStudents;
+        }).catch(error => {
+            console.error("Error connecting to Firebase:", error);
+            document.getElementById("status").innerText = "Error connecting to Firebase. Check the console for details.";
+        });
     </script>
 </body>
 </html>
